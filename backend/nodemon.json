@@ -1,0 +1,10 @@
+{
+  "watch": ["src"],
+  "ext": "js,mjs,json",
+  "ignore": [
+    "whatsapp-session/**",
+    "*.log",
+    "node_modules/**"
+  ],
+  "delay": 500
+}

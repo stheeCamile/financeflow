@@ -1,0 +1,20 @@
+app = "financeflow-backend"
+primary_region = "gru" # São Paulo (ou ewr para US)
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3001"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[mounts]
+  source = "whatsapp_data"
+  destination = "/app/whatsapp-session"

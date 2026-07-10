@@ -1,0 +1,26 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Env
+.env
+*.env.local
+
+# Build
+dist/
+build/
+
+# WhatsApp session (dados sensíveis)
+backend/whatsapp-session/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# SQLite (se usado localmente)
+*.db
+*.db-journal
