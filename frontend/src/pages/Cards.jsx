@@ -140,7 +140,7 @@ function CardFormModal({ isOpen, onClose, onSave, onDelete, card: editCard }) {
         </div>
         <div className="modal-footer" style={{ justifyContent: editCard ? 'space-between' : 'flex-end' }}>
           {editCard && (
-            <button type="button" className="btn btn-danger" onClick={() => onDelete(editCard.id)}>Excluir</button>
+            <button type="button" className="btn btn-danger" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(editCard.id); }}>Excluir</button>
           )}
           <div style={{ display: 'flex', gap: 10 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose}>Cancelar</button>
@@ -466,7 +466,7 @@ export default function Cards() {
   };
 
   const handleDeleteCard = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir esta conta/cartão? Isso removerá o histórico atrelado a ele.')) return;
+    if (!window.confirm('Tem certeza que deseja excluir esta conta/cartão? Isso removerá o histórico atrelado a ele.')) return;
     try {
       await cardsApi.remove(id);
       toast.success('Cartão/Conta excluído com sucesso!');
