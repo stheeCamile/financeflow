@@ -24,11 +24,9 @@ const PORT = process.env.PORT || 3001;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'http://localhost:5173',
-    'http://localhost:3000',
-  ],
+  origin: function (origin, callback) {
+    callback(null, true);
+  },
   credentials: true,
 }));
 
@@ -64,7 +62,7 @@ app.use((_req, res) => {
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 FinanceFlow API — porta ${PORT} | ${process.env.NODE_ENV || 'development'}`);
 
   // Auto-reconecta WhatsApp se existir sessão salva
