@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CreditCard, TrendingUp, Target, MessageCircle, Settings, LogOut, Package, Repeat, PieChart } from 'lucide-react';
+import { LayoutDashboard, CreditCard, TrendingUp, Target, MessageCircle, Settings, LogOut, Package, Repeat, PieChart, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const navItems = [
@@ -18,7 +18,7 @@ function getInitials(name = '') {
   return name.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
 }
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, close }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +28,11 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <button className="mobile-close-btn" onClick={close}>
+        <X size={20} />
+      </button>
+
       {/* Logo */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">
@@ -48,6 +52,7 @@ export default function Sidebar() {
             key={to}
             to={to}
             end={to === '/'}
+            onClick={close}
             className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
           >
             <Icon size={18} className="sidebar-icon" />

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -17,12 +19,25 @@ import Budgets from './pages/Budgets';
 import './styles/globals.css';
 
 function AppLayout({ children }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="app-layout">
-      <Sidebar />
+      <Sidebar isOpen={mobileMenuOpen} close={() => setMobileMenuOpen(false)} />
+      
       <main className="main-content">
+        <div className="mobile-header">
+          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>
+            <Menu size={24} />
+          </button>
+          <span className="sidebar-logo-text" style={{ fontSize: 18 }}>FinanceFlow</span>
+        </div>
         {children}
       </main>
+
+      {mobileMenuOpen && (
+        <div className="mobile-overlay" onClick={() => setMobileMenuOpen(false)}></div>
+      )}
     </div>
   );
 }
