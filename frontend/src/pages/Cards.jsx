@@ -226,7 +226,7 @@ function ExpenseFormModal({ isOpen, onClose, onSave, cards }) {
 }
 
 // Detalhe de fatura
-function InvoiceDetail({ invoiceId, onBack }) {
+function InvoiceDetail({ invoiceId, onBack, onDeleteExpense }) {
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editExpense, setEditExpense] = useState(null);
