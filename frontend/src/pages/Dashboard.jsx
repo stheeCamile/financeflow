@@ -13,13 +13,13 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 const CATEGORY_COLORS = {
   alimentacao: '#f59e0b', transporte: '#06b6d4', saude: '#10b981',
   lazer: '#7c3aed', educacao: '#3b82f6', casa: '#6366f1',
-  roupas: '#ec4899', outros: '#94a3b8',
+  roupas: '#ec4899', juros: '#ef4444', outros: '#94a3b8',
 };
 
 const CATEGORY_LABELS = {
   alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
   lazer: 'Lazer', educacao: 'Educação', casa: 'Casa',
-  roupas: 'Roupas', outros: 'Outros',
+  roupas: 'Roupas', juros: 'Juros/Taxas', outros: 'Outros',
 };
 
 const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];

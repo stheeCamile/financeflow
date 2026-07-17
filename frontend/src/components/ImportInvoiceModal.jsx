@@ -7,7 +7,7 @@ import { importApi, expensesApi } from '../services/api';
 const CATEGORY_LABELS = {
   moradia: 'Moradia', alimentacao: 'Alimentação', transporte: 'Transporte',
   saude: 'Saúde', educacao: 'Educação', lazer: 'Lazer', compras: 'Compras',
-  assinaturas: 'Assinaturas', outros: 'Outros'
+  assinaturas: 'Assinaturas', juros: 'Juros/Taxas', outros: 'Outros'
 };
 
 export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSuccess }) {

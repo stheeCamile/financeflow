@@ -246,8 +246,9 @@ Formato exato de cada objeto do array:
 }
 Se a descrição indicar parcela (ex: "Compra XPTO 03/10"), preencha "installment_current": 3 e "installment_total": 10. Se não houver, coloque 1 e 1.
 Para o campo 'date', adivinhe o ano atual se não estiver explícito.
-Categorias permitidas: moradia, alimentacao, transporte, saude, educacao, lazer, compras, assinaturas, outros.
-Se não tiver certeza da categoria, use "outros".
+Categorias permitidas: moradia, alimentacao, transporte, saude, educacao, lazer, compras, assinaturas, juros, outros.
+Se a descrição indicar juros, multas, IOF ou taxas do cartão, use a categoria "juros".
+Se não tiver certeza da categoria, tente deduzir pelo nome, ou use "outros".
 Seja extremamente preciso com os valores financeiros.`;
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${keys.gemini}`;

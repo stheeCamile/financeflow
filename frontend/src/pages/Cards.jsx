@@ -8,8 +8,8 @@ import ImportInvoiceModal from '../components/ImportInvoiceModal';
 
 const BRANDS = ['Nubank', 'Itaú', 'Bradesco', 'Santander', 'Caixa', 'Banco do Brasil', 'Inter', 'C6 Bank', 'XP', 'Next', 'Outro'];
 const COLORS = ['#7c3aed','#06b6d4','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899','#6366f1','#84cc16','#f97316', '#eab308', '#facc15'];
-const CATEGORIES = ['alimentacao','transporte','saude','lazer','educacao','casa','roupas','outros'];
-const CATEGORY_LABELS = { alimentacao:'Alimentação', transporte:'Transporte', saude:'Saúde', lazer:'Lazer', educacao:'Educação', casa:'Casa', roupas:'Roupas', outros:'Outros' };
+const CATEGORIES = ['alimentacao','transporte','saude','lazer','educacao','casa','roupas','juros','outros'];
+const CATEGORY_LABELS = { alimentacao:'Alimentação', transporte:'Transporte', saude:'Saúde', lazer:'Lazer', educacao:'Educação', casa:'Casa', roupas:'Roupas', juros:'Juros/Taxas', outros:'Outros' };
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
 function formatCurrency(v) {

@@ -5,11 +5,11 @@ import { subscriptionsApi, cardsApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
 
 const CATEGORIES = [
-  'alimentacao', 'transporte', 'saude', 'lazer', 'educacao', 'casa', 'roupas', 'outros'
+  'alimentacao', 'transporte', 'saude', 'lazer', 'educacao', 'casa', 'roupas', 'juros', 'outros'
 ];
 const CATEGORY_LABELS = {
   alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
-  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', outros: 'Outros'
+  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', outros: 'Outros'
 };
 
 function formatCurrency(v) {

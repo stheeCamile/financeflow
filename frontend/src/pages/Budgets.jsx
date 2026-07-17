@@ -6,12 +6,12 @@ import { useToast } from '../context/ToastContext';
 
 const CATEGORY_LABELS = {
   alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
-  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', outros: 'Outros'
+  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', outros: 'Outros'
 };
 
 const CATEGORY_ICONS = {
   alimentacao: '🍔', transporte: '🚗', saude: '🏥', lazer: '🎬',
-  educacao: '📚', casa: '🏠', roupas: '👕', outros: '📦'
+  educacao: '📚', casa: '🏠', roupas: '👕', juros: '💸', outros: '📦'
 };
 
 function formatCurrency(v) {
