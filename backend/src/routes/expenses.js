@@ -56,6 +56,10 @@ export async function ensureInvoice(card, purchaseDate) {
     dueDate = card.due_day >= card.closing_day
       ? clampDate(year, month, card.due_day)
       : clampDate(year, month + 1, card.due_day);
+      
+    // A fatura sempre deve levar o nome do mês de vencimento
+    month = dueDate.getMonth() + 1;
+    year = dueDate.getFullYear();
   }
 
   let status = 'open';
