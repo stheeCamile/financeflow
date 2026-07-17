@@ -436,6 +436,7 @@ export default function Cards() {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [showCardModal, setShowCardModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [editCard, setEditCard]   = useState(null);
   const [loading, setLoading]     = useState(true);
   const toast = useToast();
@@ -590,8 +591,11 @@ export default function Cards() {
       ) : (
         // Lista de faturas do cartão selecionado
         <div>
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <CardVisual card={selectedCard} />
+            <button className="btn btn-secondary" style={{ alignSelf: 'flex-start' }} onClick={() => setShowImportModal(true)}>
+              <UploadCloud size={16} /> Importar Fatura (IA)
+            </button>
           </div>
           <h3 style={{ fontWeight: 700, fontSize: 16, marginBottom: 16 }}>Faturas</h3>
           {!invoices[selectedCard.id] || invoices[selectedCard.id].length === 0 ? (
@@ -649,6 +653,15 @@ export default function Cards() {
         onSave={handleSaveExpense}
         cards={cards}
       />
+
+      {showImportModal && (
+        <ImportInvoiceModal
+          isOpen={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          cardId={selectedCard?.id}
+          onImportSuccess={() => loadInvoices(selectedCard?.id)}
+        />
+      )}
     </div>
   );
 }
