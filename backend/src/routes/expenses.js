@@ -14,6 +14,15 @@ async function getCardForUser(cardId, userId) {
   return result.rows[0] || null;
 }
 
+// Helper: clampDate
+function clampDate(year, month, day) {
+  const date = new Date(year, month - 1, day);
+  if (date.getMonth() !== (month - 1) % 12) {
+    date.setDate(0);
+  }
+  return date;
+}
+
 // Helper: garante que a fatura existe, criando se necessário
 export async function ensureInvoice(card, purchaseDate) {
   const date = new Date(purchaseDate);
