@@ -25,9 +25,7 @@ const PORT = process.env.PORT || 3001;
 
 // ── Middlewares ───────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true);
-  },
+  origin: ['http://localhost:5173', 'https://financeflow-seven-nu.vercel.app'],
   credentials: true,
 }));
 
