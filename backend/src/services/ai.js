@@ -250,7 +250,7 @@ Categorias permitidas: moradia, alimentacao, transporte, saude, educacao, lazer,
 Se não tiver certeza da categoria, use "outros".
 Seja extremamente preciso com os valores financeiros.`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${keys.gemini}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${keys.gemini}`;
   
   const payload = {
     contents: [{
