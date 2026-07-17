@@ -89,7 +89,15 @@ router.get('/summary', async (req, res) => {
       `SELECT COALESCE(SUM(balance), 0) AS total FROM cards WHERE type IN ('account', 'debit') AND is_active = TRUE AND user_id = $1`,
       [uid]
     );
-    const totalNetWorth = parseFloat(netWorthRes.rows[0].total);
+    const futureRevRes = await query(
+      `SELECT COALESCE(SUM(amount), 0) AS total FROM revenues WHERE received_date > CURRENT_DATE AND account_id IS NOT NULL AND user_id = $1`,
+      [uid]
+    );
+    const futureExpRes = await query(
+      `SELECT COALESCE(SUM(e.amount), 0) AS total FROM expenses e JOIN cards c ON e.card_id = c.id WHERE c.type IN ('account', 'debit') AND e.purchase_date > CURRENT_DATE AND c.user_id = $1`,
+      [uid]
+    );
+    const totalNetWorth = parseFloat(netWorthRes.rows[0].total) - parseFloat(futureRevRes.rows[0].total) + parseFloat(futureExpRes.rows[0].total);
 
     const totalSpent   = parseFloat(totalSpentRes.rows[0].total);
     const totalRevenue = parseFloat(totalRevenueRes.rows[0].total);

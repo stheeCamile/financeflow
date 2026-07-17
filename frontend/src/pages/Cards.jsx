@@ -367,7 +367,7 @@ function InvoiceDetail({ invoiceId, onBack, onDeleteExpense }) {
 
 function EditExpenseModal({ isOpen, onClose, onSave, onDelete, expense }) {
   const [form, setForm] = useState({ 
-    description: '', category: 'outros', amount: '', 
+    description: '', category: 'outros', amount: '', purchase_date: '',
     installment_current: 1, installment_total: 1 
   });
 
@@ -377,6 +377,7 @@ function EditExpenseModal({ isOpen, onClose, onSave, onDelete, expense }) {
         description: expense.description, 
         category: expense.category, 
         amount: expense.amount,
+        purchase_date: expense.purchase_date ? new Date(expense.purchase_date).toISOString().split('T')[0] : '',
         installment_current: expense.installment_current || 1,
         installment_total: expense.installment_total || 1
       });
@@ -416,6 +417,10 @@ function EditExpenseModal({ isOpen, onClose, onSave, onDelete, expense }) {
             <label className="form-label">Total de Parcelas</label>
             <input className="form-input" type="number" min="1" required value={form.installment_total} onChange={e => set('installment_total', parseInt(e.target.value) || 1)} />
           </div>
+        </div>
+        <div className="form-group" style={{ marginBottom: '1rem' }}>
+          <label className="form-label">Data da compra</label>
+          <input className="form-input" type="date" required value={form.purchase_date} onChange={e => set('purchase_date', e.target.value)} />
         </div>
         <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
           <button type="button" className="btn btn-danger" onClick={onDelete}>Excluir</button>
