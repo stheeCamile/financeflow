@@ -220,6 +220,10 @@ async function processMessage(text, userId) {
         [invoice.id, card.id, description, category, installmentAmount.toFixed(2), i, installment_total, installDate.toISOString().split('T')[0]]
       );
     }
+    
+    if (card.type === 'debit' || card.type === 'account') {
+      await query(`UPDATE cards SET balance = balance - $1 WHERE id = $2`, [amount, card.id]);
+    }
 
     const limitRes = await query(
       `SELECT value FROM settings WHERE key = 'monthly_limit_global' AND user_id = $1`,
@@ -383,8 +387,9 @@ export async function connectWhatsApp() {
         if (!user) {
           console.log(`   ⚠️  Número ${senderNumber} não encontrado nas settings.`);
           await sock.sendMessage(jid, {
-            text: `❌ Número não cadastrado no FinanceFlow.\n\nAcesse o app, vá em WhatsApp e configure seu número para usar o bot.`
+            text: `❌ Conta não encontrada.\n\nPara o robô te reconhecer, acesse o app do FinanceFlow, vá em *Configurações* e cole exatamente o código abaixo no campo de WhatsApp:`
           }, { quoted: msg });
+          await sock.sendMessage(jid, { text: senderNumber });
           continue;
         }
 

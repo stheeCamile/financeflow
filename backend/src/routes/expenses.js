@@ -163,18 +163,75 @@ router.post('/', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// POST /api/expenses/bulk
+router.post('/bulk', async (req, res) => {
+  try {
+    const { card_id, expenses } = req.body;
+    
+    if (!card_id || !Array.isArray(expenses) || expenses.length === 0) {
+      return res.status(400).json({ error: 'Forneça card_id e uma array de expenses.' });
+    }
+
+    const card = await getCardForUser(card_id, req.userId);
+    if (!card) return res.status(404).json({ error: 'Cartão não encontrado.' });
+
+    let totalAmount = 0;
+    const createdExpenses = [];
+
+    for (const exp of expenses) {
+      const amount = parseFloat(exp.amount) || 0;
+      if (amount <= 0) continue;
+
+      const date = exp.date ? new Date(exp.date) : new Date();
+      const invoice = await ensureInvoice(card, date);
+      
+      const result = await query(
+        `INSERT INTO expenses
+          (invoice_id, card_id, description, category, amount, installment_current, installment_total, purchase_date, source)
+         VALUES ($1, $2, $3, $4, $5, 1, 1, $6, 'import') RETURNING *`,
+        [
+          invoice.id, card.id, exp.description || 'Gasto importado',
+          exp.category || 'outros', amount.toFixed(2),
+          date.toISOString().split('T')[0]
+        ]
+      );
+      createdExpenses.push(result.rows[0]);
+      totalAmount += amount;
+    }
+
+    if (card.type === 'debit' || card.type === 'account') {
+      await query(`UPDATE cards SET balance = balance - $1 WHERE id = $2`, [totalAmount, card.id]);
+    }
+
+    res.status(201).json({ message: `${createdExpenses.length} gastos criados.`, expenses: createdExpenses });
+  } catch (err) {
+    console.error('Erro no bulk insert:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PUT /api/expenses/:id
 router.put('/:id', async (req, res) => {
   try {
-    // Verifica que o gasto pertence ao usuário via JOIN
+    // Verifica que o gasto pertence ao usuário e pega o valor atual + tipo de cartão
     const check = await query(
-      `SELECT e.id FROM expenses e JOIN cards c ON e.card_id = c.id
+      `SELECT e.id, e.amount as old_amount, e.card_id, c.type 
+       FROM expenses e JOIN cards c ON e.card_id = c.id
        WHERE e.id = $1 AND c.user_id = $2`,
       [req.params.id, req.userId]
     );
     if (check.rows.length === 0) return res.status(404).json({ error: 'Gasto não encontrado' });
 
     const { description, category, amount, purchase_date, notes, installment_current, installment_total } = req.body;
+    
+    // Atualiza o saldo se for débito/conta e o valor mudou
+    if ((check.rows[0].type === 'debit' || check.rows[0].type === 'account') && amount !== undefined) {
+      const diff = amount - check.rows[0].old_amount;
+      if (diff !== 0) {
+        await query(`UPDATE cards SET balance = balance - $1 WHERE id = $2`, [diff, check.rows[0].card_id]);
+      }
+    }
+
     const result = await query(
       `UPDATE expenses SET
         description = COALESCE($1, description),
@@ -195,11 +252,19 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const check = await query(
-      `SELECT e.id FROM expenses e JOIN cards c ON e.card_id = c.id
+      `SELECT e.id, e.amount, e.card_id, c.type 
+       FROM expenses e JOIN cards c ON e.card_id = c.id
        WHERE e.id = $1 AND c.user_id = $2`,
       [req.params.id, req.userId]
     );
     if (check.rows.length === 0) return res.status(404).json({ error: 'Gasto não encontrado' });
+
+    const exp = check.rows[0];
+    
+    // Estorna saldo se for conta/débito
+    if (exp.type === 'debit' || exp.type === 'account') {
+      await query(`UPDATE cards SET balance = balance + $1 WHERE id = $2`, [exp.amount, exp.card_id]);
+    }
 
     await query('DELETE FROM expenses WHERE id = $1', [req.params.id]);
     res.json({ message: 'Gasto removido' });

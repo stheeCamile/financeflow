@@ -52,9 +52,20 @@ export const invoicesApi = {
 export const expensesApi = {
   getAll: (filters) => api.get('/expenses', { params: filters }),
   create: (data) => api.post('/expenses', data),
+  bulk: (data) => api.post('/expenses/bulk', data),
   update: (id, data) => api.put(`/expenses/${id}`, data),
   delete: (id) => api.delete(`/expenses/${id}`),
   getInstallments: () => api.get('/expenses/installments'),
+};
+
+export const importApi = {
+  uploadInvoice: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/import/invoice', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  }
 };
 
 // ── Subscriptions ─────────────────────────────────────────────

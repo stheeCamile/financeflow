@@ -219,8 +219,75 @@ export async function generateWeeklyAnalysis(userId) {
   try {
     return await callGemini(keys.gemini, keys.groq, prompt);
   } catch (err) {
-    console.error('Erro na análise semanal:', err);
+    console.error('Erro na AI Semanal:', err);
     return null;
+  }
+}
+
+/**
+ * Lê o print de uma fatura usando Visão Computacional do Gemini
+ */
+export async function parseInvoiceImage(userId, base64Data, mimeType) {
+  const keys = await getApiKeys(userId);
+  if (!keys.gemini) throw new Error('Chave da API do Gemini não configurada (Vá em Configurações > Automação Inteligente)');
+
+  const prompt = `Você é um assistente financeiro especialista em extrair dados de faturas de cartão de crédito e extratos bancários.
+Examine o arquivo fornecido (imagem ou PDF) e extraia todos os gastos listados.
+Ignore linhas que sejam pagamentos da própria fatura (ex: "Pagamento recebido", "Pagamento de fatura").
+Retorne APENAS um array JSON puro (sem marcações markdown, sem \`\`\`json, sem explicações).
+Formato exato de cada objeto do array:
+{
+  "date": "YYYY-MM-DD",
+  "description": "Nome do estabelecimento/loja",
+  "amount": 150.50,
+  "category": "alimentacao"
+}
+Para o campo 'date', adivinhe o ano atual se não estiver explícito.
+Categorias permitidas: moradia, alimentacao, transporte, saude, educacao, lazer, compras, assinaturas, outros.
+Se não tiver certeza da categoria, use "outros".
+Seja extremamente preciso com os valores financeiros.`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${keys.gemini}`;
+  
+  const payload = {
+    contents: [{
+      parts: [
+        { text: prompt },
+        {
+          inlineData: {
+            mimeType,
+            data: base64Data
+          }
+        }
+      ]
+    }],
+    generationConfig: {
+      temperature: 0.1 // Temperatura baixa para ser preciso e não inventar dados
+    }
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Erro na visão da IA: ${errText}`);
+  }
+
+  const data = await response.json();
+  let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+  
+  // Limpar formatações de markdown caso ele retorne mesmo pedindo para não retornar
+  text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+  
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.error('Falha no parse do JSON retornado:', text);
+    throw new Error('A IA não retornou os dados em um formato compreensível.');
   }
 }
 

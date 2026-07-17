@@ -14,6 +14,7 @@ import settingsRouter from './routes/settings.js';
 import whatsappRouter from './routes/whatsapp.js';
 import subscriptionsRouter from './routes/subscriptions.js';
 import budgetsRouter from './routes/budgets.js';
+import importRouter  from './routes/import.js';
 import { connectWhatsApp } from './whatsapp/bot.js';
 import { startScheduler } from './scheduler.js';
 
@@ -50,6 +51,7 @@ app.use('/api/settings',      settingsRouter);
 app.use('/api/whatsapp',      whatsappRouter);
 app.use('/api/subscriptions', subscriptionsRouter);
 app.use('/api/budgets',       budgetsRouter);
+app.use('/api/import',        importRouter);
 
 // ── Tratamento de erros ───────────────────────────────────────────────────────
 app.use((err, _req, res, _next) => {

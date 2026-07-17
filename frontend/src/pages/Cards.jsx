@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ChevronRight, CreditCard, ArrowLeft, X, Check, Lock } from 'lucide-react';
+import { Plus, ChevronRight, CreditCard, ArrowLeft, X, Check, Lock, UploadCloud } from 'lucide-react';
 import { cardsApi, expensesApi, invoicesApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import Modal from '../components/shared/Modal';
+import ImportInvoiceModal from '../components/ImportInvoiceModal';
 
 const BRANDS = ['Nubank', 'Itaú', 'Bradesco', 'Santander', 'Caixa', 'Banco do Brasil', 'Inter', 'C6 Bank', 'XP', 'Next', 'Outro'];
 const COLORS = ['#7c3aed','#06b6d4','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899','#6366f1','#84cc16','#f97316', '#eab308', '#facc15'];
@@ -230,10 +231,15 @@ function InvoiceDetail({ invoiceId, onBack, onDeleteExpense }) {
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editExpense, setEditExpense] = useState(null);
+  const [showImport, setShowImport] = useState(false);
   const toast = useToast();
 
-  useEffect(() => {
+  const fetchInvoiceDetails = () => {
     invoicesApi.getById(invoiceId).then(setInvoice).catch(e => toast.error(e.message)).finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchInvoiceDetails();
   }, [invoiceId]);
 
   if (loading) return <div className="loading-center"><div className="spinner" /></div>;
@@ -267,13 +273,19 @@ function InvoiceDetail({ invoiceId, onBack, onDeleteExpense }) {
             </span>
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
           <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--primary-light)' }}>{formatCurrency(invoice.total_amount)}</div>
-          {invoice.status !== 'paid' && (
-            <button className="btn btn-primary btn-sm" style={{ marginTop: 8 }} onClick={handlePay}>
-              <Check size={14} /> Marcar como Paga
+          
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-secondary btn-sm" onClick={() => setShowImport(true)}>
+              <UploadCloud size={14} /> Importar Fatura
             </button>
-          )}
+            {invoice.status !== 'paid' && (
+              <button className="btn btn-primary btn-sm" onClick={handlePay}>
+                <Check size={14} /> Marcar como Paga
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -340,6 +352,15 @@ function InvoiceDetail({ invoiceId, onBack, onDeleteExpense }) {
           } catch (e) { toast.error(e.message); }
         }}
       />
+
+      {showImport && (
+        <ImportInvoiceModal
+          isOpen={showImport}
+          onClose={() => setShowImport(false)}
+          cardId={invoice.card_id}
+          onImportSuccess={fetchInvoiceDetails}
+        />
+      )}
     </div>
   );
 }
