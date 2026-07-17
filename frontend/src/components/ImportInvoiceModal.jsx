@@ -136,6 +136,7 @@ export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSu
                   <th>Descrição</th>
                   <th>Valor</th>
                   <th>Categoria</th>
+                  <th>Parcela</th>
                   <th></th>
                 </tr>
               </thead>
@@ -177,6 +178,15 @@ export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSu
                           <option key={k} value={k}>{v}</option>
                         ))}
                       </select>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                        <input type="number" min="1" style={{ width: 40, border: '1px solid var(--bg-border)', borderRadius: 4, padding: 4, textAlign: 'center' }} 
+                          value={exp.installment_current || 1} onChange={e => updateExpense(idx, 'installment_current', e.target.value)} />
+                        <span>/</span>
+                        <input type="number" min="1" style={{ width: 40, border: '1px solid var(--bg-border)', borderRadius: 4, padding: 4, textAlign: 'center' }} 
+                          value={exp.installment_total || 1} onChange={e => updateExpense(idx, 'installment_total', e.target.value)} />
+                      </div>
                     </td>
                     <td>
                       <button className="btn btn-ghost btn-sm" onClick={() => removeExpense(idx)}>

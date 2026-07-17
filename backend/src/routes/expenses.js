@@ -185,13 +185,17 @@ router.post('/bulk', async (req, res) => {
       const date = exp.date ? new Date(exp.date) : new Date();
       const invoice = await ensureInvoice(card, date);
       
+      const instCurr = parseInt(exp.installment_current) || 1;
+      const instTotal = parseInt(exp.installment_total) || 1;
+
       const result = await query(
         `INSERT INTO expenses
           (invoice_id, card_id, description, category, amount, installment_current, installment_total, purchase_date, source)
-         VALUES ($1, $2, $3, $4, $5, 1, 1, $6, 'import') RETURNING *`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'import') RETURNING *`,
         [
           invoice.id, card.id, exp.description || 'Gasto importado',
           exp.category || 'outros', amount.toFixed(2),
+          instCurr, instTotal,
           date.toISOString().split('T')[0]
         ]
       );

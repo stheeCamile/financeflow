@@ -234,14 +234,17 @@ export async function parseInvoiceImage(userId, base64Data, mimeType) {
   const prompt = `Você é um assistente financeiro especialista em extrair dados de faturas de cartão de crédito e extratos bancários.
 Examine o arquivo fornecido (imagem ou PDF) e extraia todos os gastos listados.
 Ignore linhas que sejam pagamentos da própria fatura (ex: "Pagamento recebido", "Pagamento de fatura").
-Retorne APENAS um array JSON puro (sem marcações markdown, sem \`\`\`json, sem explicações).
+Retorne APENAS um array JSON puro (sem marcações markdown, sem ```json, sem explicações).
 Formato exato de cada objeto do array:
 {
   "date": "YYYY-MM-DD",
   "description": "Nome do estabelecimento/loja",
   "amount": 150.50,
-  "category": "alimentacao"
+  "category": "alimentacao",
+  "installment_current": 1,
+  "installment_total": 1
 }
+Se a descrição indicar parcela (ex: "Compra XPTO 03/10"), preencha "installment_current": 3 e "installment_total": 10. Se não houver, coloque 1 e 1.
 Para o campo 'date', adivinhe o ano atual se não estiver explícito.
 Categorias permitidas: moradia, alimentacao, transporte, saude, educacao, lazer, compras, assinaturas, outros.
 Se não tiver certeza da categoria, use "outros".
