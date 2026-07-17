@@ -85,20 +85,33 @@ export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSu
           
           <div 
             style={{ 
-              border: '2px dashed var(--bg-border)', 
+              border: `2px dashed ${file ? 'var(--primary)' : 'var(--bg-border)'}`, 
               borderRadius: 'var(--radius-lg)', 
               padding: 40, 
               textAlign: 'center',
               cursor: 'pointer',
-              background: 'var(--bg-input)'
+              background: file ? 'var(--primary-dim)' : 'var(--bg-input)',
+              transition: 'all 0.2s'
             }}
             onClick={() => fileInputRef.current?.click()}
           >
-            <UploadCloud size={48} color="var(--primary)" style={{ marginBottom: 16 }} />
-            <h3 style={{ fontSize: 16, fontWeight: 600 }}>{file ? file.name : 'Clique ou arraste o arquivo aqui'}</h3>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-              Formatos aceitos: JPG, PNG, PDF, CSV
-            </p>
+            {file ? (
+              <>
+                <Check size={48} color="var(--primary)" style={{ marginBottom: 16 }} />
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--primary)' }}>Arquivo Pronto para Análise</h3>
+                <p style={{ fontSize: 13, color: 'var(--primary)', marginTop: 4, fontWeight: 500 }}>
+                  {file.name}
+                </p>
+              </>
+            ) : (
+              <>
+                <UploadCloud size={48} color="var(--primary)" style={{ marginBottom: 16 }} />
+                <h3 style={{ fontSize: 16, fontWeight: 600 }}>Clique ou arraste o arquivo aqui</h3>
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+                  Formatos aceitos: JPG, PNG, PDF, CSV
+                </p>
+              </>
+            )}
             <input 
               type="file" 
               ref={fileInputRef} 
