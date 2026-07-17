@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { UploadCloud, Check, X, Edit2, Trash2 } from 'lucide-react';
-import Modal from './Modal';
+import Modal from "./shared/Modal";
 import { useToast } from '../context/ToastContext';
 import { importApi, expensesApi } from '../services/api';
 
