@@ -80,7 +80,7 @@ export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSu
       {step === 'upload' && (
         <div style={{ padding: 20 }}>
           <p style={{ marginBottom: 20, color: 'var(--text-secondary)' }}>
-            Faça upload do extrato ou fatura (PNG, JPG ou PDF). A IA vai extrair todos os gastos para você não precisar digitar nada!
+            Faça upload do extrato ou fatura (PNG, JPG, PDF ou CSV). A IA vai extrair todos os gastos para você não precisar digitar nada!
           </p>
           
           <div 
@@ -95,15 +95,15 @@ export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSu
             onClick={() => fileInputRef.current?.click()}
           >
             <UploadCloud size={48} color="var(--primary)" style={{ marginBottom: 16 }} />
-            <h3 style={{ fontSize: 16, fontWeight: 600 }}>{file ? file.name : 'Clique ou arraste a imagem aqui'}</h3>
+            <h3 style={{ fontSize: 16, fontWeight: 600 }}>{file ? file.name : 'Clique ou arraste o arquivo aqui'}</h3>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-              Formatos aceitos: JPG, PNG, PDF
+              Formatos aceitos: JPG, PNG, PDF, CSV
             </p>
             <input 
               type="file" 
               ref={fileInputRef} 
               style={{ display: 'none' }} 
-              accept="image/*,application/pdf"
+              accept="image/*,application/pdf,text/csv,.csv"
               onChange={handleFileChange}
             />
           </div>

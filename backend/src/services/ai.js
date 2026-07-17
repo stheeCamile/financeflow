@@ -232,7 +232,7 @@ export async function parseInvoiceImage(userId, base64Data, mimeType) {
   if (!keys.gemini) throw new Error('Chave da API do Gemini não configurada (Vá em Configurações > Automação Inteligente)');
 
   const prompt = `Você é um assistente financeiro especialista em extrair dados de faturas de cartão de crédito e extratos bancários.
-Examine o arquivo fornecido (imagem ou PDF) e extraia todos os gastos listados.
+Examine o arquivo fornecido (imagem, PDF ou CSV) e extraia todos os gastos listados.
 Ignore linhas que sejam pagamentos da própria fatura (ex: "Pagamento recebido", "Pagamento de fatura").
 Retorne APENAS um array JSON puro (sem formatação markdown e sem explicações).
 Formato exato de cada objeto do array:
