@@ -5,11 +5,11 @@ import { subscriptionsApi, cardsApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
 
 const CATEGORIES = [
-  'alimentacao', 'transporte', 'saude', 'lazer', 'educacao', 'casa', 'roupas', 'juros', 'outros'
+  'alimentacao', 'transporte', 'saude', 'lazer', 'educacao', 'casa', 'roupas', 'juros', 'assinaturas', 'outros'
 ];
 const CATEGORY_LABELS = {
   alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
-  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', outros: 'Outros'
+  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', assinaturas: 'Assinaturas', outros: 'Outros'
 };
 
 function formatCurrency(v) {
@@ -188,37 +188,39 @@ export default function Subscriptions() {
                     <td style={{ padding: '12px 16px' }}>
                       <span style={{ 
                         padding: '4px 8px', borderRadius: 4, fontSize: 12, fontWeight: 500,
-                        backgroundColor: s.is_active ? 'var(--green-light)' : 'var(--bg-secondary)',
-                        color: s.is_active ? 'var(--green)' : 'var(--text-secondary)'
+                        backgroundColor: s.item_type === 'expense' ? 'var(--primary)' : s.is_active ? 'var(--green-light)' : 'var(--bg-secondary)',
+                        color: s.item_type === 'expense' ? '#fff' : s.is_active ? 'var(--green)' : 'var(--text-secondary)'
                       }}>
-                        {s.is_active ? 'Ativa' : 'Pausada'}
+                        {s.item_type === 'expense' ? 'Mês Atual' : s.is_active ? 'Recorrente' : 'Pausada'}
                       </span>
                     </td>
                     <td style={{ padding: '12px 16px', fontWeight: 500 }}>{s.description}</td>
                     <td style={{ padding: '12px 16px' }}>{s.card_name}</td>
-                    <td style={{ padding: '12px 16px' }}>Todo dia {s.billing_day}</td>
+                    <td style={{ padding: '12px 16px' }}>{s.item_type === 'expense' ? `Dia ${s.billing_day}` : `Todo dia ${s.billing_day}`}</td>
                     <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 600, color: 'var(--red)' }}>
                       {formatCurrency(s.amount)}
                     </td>
                     <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                        <button 
-                          className="btn btn-secondary" 
-                          style={{ padding: 6 }}
-                          onClick={() => toggleActive(s)}
-                          title={s.is_active ? 'Pausar' : 'Reativar'}
-                        >
-                          {s.is_active ? <Pause size={16} /> : <Play size={16} />}
-                        </button>
-                        <button 
-                          className="btn btn-secondary" 
-                          style={{ padding: 6, color: 'var(--red)' }}
-                          onClick={() => handleDelete(s.id)}
-                          title="Excluir"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                      {s.item_type !== 'expense' && (
+                        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                          <button 
+                            className="btn btn-secondary" 
+                            style={{ padding: 6 }}
+                            onClick={() => toggleActive(s)}
+                            title={s.is_active ? 'Pausar' : 'Reativar'}
+                          >
+                            {s.is_active ? <Pause size={16} /> : <Play size={16} />}
+                          </button>
+                          <button 
+                            className="btn btn-secondary" 
+                            style={{ padding: 6, color: 'var(--red)' }}
+                            onClick={() => handleDelete(s.id)}
+                            title="Excluir"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -18,8 +18,7 @@ const CATEGORY_COLORS = {
 
 const CATEGORY_LABELS = {
   alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
-  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa',
-  roupas: 'Roupas', juros: 'Juros/Taxas', outros: 'Outros',
+  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', assinaturas: 'Assinaturas', outros: 'Outros'
 };
 
 const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -89,7 +88,7 @@ export default function Dashboard() {
 
   const donutData = {
     labels: catLabels,
-    datasets: [{ data: catValues, backgroundColor: catColors, borderWidth: 2, borderColor: '#111122' }],
+    datasets: [{ data: catValues, backgroundColor: catColors, borderWidth: 0, hoverOffset: 4 }],
   };
 
   // Dados do gráfico de linha (evolução)
@@ -104,21 +103,23 @@ export default function Dashboard() {
         label: 'Gastos',
         data: lineSpent,
         borderColor: '#7c3aed',
-        backgroundColor: 'rgba(124,58,237,0.1)',
+        backgroundColor: 'rgba(124,58,237,0.15)',
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: '#7c3aed',
-        pointRadius: 5,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        borderWidth: 3,
       },
       {
         label: 'Receitas',
         data: lineRevenue,
         borderColor: '#10b981',
-        backgroundColor: 'rgba(16,185,129,0.05)',
+        backgroundColor: 'rgba(16,185,129,0.15)',
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: '#10b981',
-        pointRadius: 5,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        borderWidth: 3,
       },
     ],
   };
@@ -166,7 +167,7 @@ export default function Dashboard() {
   const paymentValues = summary?.paymentMethods?.map(p => parseFloat(p.total)) || [];
   const paymentData = {
     labels: paymentLabels,
-    datasets: [{ data: paymentValues, backgroundColor: ['#7c3aed', '#06b6d4', '#f59e0b'], borderWidth: 2, borderColor: '#111122' }],
+    datasets: [{ data: paymentValues, backgroundColor: ['#7c3aed', '#06b6d4', '#f59e0b'], borderWidth: 0, hoverOffset: 4 }],
   };
 
   return (

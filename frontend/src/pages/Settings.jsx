@@ -4,8 +4,8 @@ import { Save, Check } from 'lucide-react';
 import { settingsApi, whatsappApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
 
-const CATEGORIES_EXPENSE = ['alimentacao','transporte','saude','lazer','educacao','casa','roupas','outros'];
-const CATEGORY_LABELS = { alimentacao:'Alimentação', transporte:'Transporte', saude:'Saúde', lazer:'Lazer', educacao:'Educação', casa:'Casa', roupas:'Roupas', juros:'Juros/Taxas', outros:'Outros' };
+const CATEGORIES = ['alimentacao','transporte','saude','lazer','educacao','casa','roupas','juros','assinaturas','outros'];
+const CATEGORY_LABELS = { alimentacao:'Alimentação', transporte:'Transporte', saude:'Saúde', lazer:'Lazer', educacao:'Educação', casa:'Casa', roupas:'Roupas', juros:'Juros/Taxas', assinaturas:'Assinaturas', outros:'Outros' };
 
 function formatCurrency(v) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);

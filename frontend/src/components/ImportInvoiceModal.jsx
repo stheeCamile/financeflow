@@ -5,9 +5,8 @@ import { useToast } from '../context/ToastContext';
 import { importApi, expensesApi } from '../services/api';
 
 const CATEGORY_LABELS = {
-  moradia: 'Moradia', alimentacao: 'Alimentação', transporte: 'Transporte',
-  saude: 'Saúde', educacao: 'Educação', lazer: 'Lazer', compras: 'Compras',
-  assinaturas: 'Assinaturas', juros: 'Juros/Taxas', outros: 'Outros'
+  alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
+  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', assinaturas: 'Assinaturas', outros: 'Outros'
 };
 
 export default function ImportInvoiceModal({ isOpen, onClose, cardId, onImportSuccess }) {

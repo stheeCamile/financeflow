@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext';
 
 const CATEGORY_LABELS = {
   alimentacao: 'Alimentação', transporte: 'Transporte', saude: 'Saúde',
-  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', outros: 'Outros'
+  lazer: 'Lazer', educacao: 'Educação', casa: 'Casa', roupas: 'Roupas', juros: 'Juros/Taxas', assinaturas: 'Assinaturas', outros: 'Outros'
 };
 
 const CATEGORY_ICONS = {

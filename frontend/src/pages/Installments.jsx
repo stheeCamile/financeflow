@@ -28,6 +28,10 @@ export default function Installments() {
     }
   }
 
+  const activeInstallments = installments.filter(inst => inst.paid_installments < inst.total_installments);
+  const totalMonthlyImpact = activeInstallments.reduce((acc, inst) => acc + parseFloat(inst.installment_amount), 0);
+  const totalLeftToPay = activeInstallments.reduce((acc, inst) => acc + (parseFloat(inst.installment_amount) * (inst.total_installments - inst.paid_installments)), 0);
+
   return (
     <div className="page-container">
       <div className="page-header">
@@ -36,6 +40,19 @@ export default function Installments() {
           <p className="page-subtitle">Acompanhe suas compras parceladas e o progresso de pagamento</p>
         </div>
       </div>
+
+      {!loading && activeInstallments.length > 0 && (
+        <div style={{ display: 'flex', gap: 24, marginBottom: 32 }}>
+          <div className="card" style={{ flex: 1, background: 'linear-gradient(135deg, var(--surface-hover), var(--surface))', border: '1px solid var(--border)' }}>
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>Total Comprometido (Falta Pagar)</div>
+            <div style={{ fontSize: 24, fontWeight: 800 }}>{formatCurrency(totalLeftToPay)}</div>
+          </div>
+          <div className="card" style={{ flex: 1, background: 'linear-gradient(135deg, var(--surface-hover), var(--surface))', border: '1px solid var(--border)' }}>
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>Impacto Mensal (Soma das Parcelas)</div>
+            <div style={{ fontSize: 24, fontWeight: 800 }}>{formatCurrency(totalMonthlyImpact)}</div>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="loading-center"><div className="spinner" /></div>

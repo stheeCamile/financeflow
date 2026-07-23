@@ -8,8 +8,8 @@ import ImportInvoiceModal from '../components/ImportInvoiceModal';
 
 const BRANDS = ['Nubank', 'Itaú', 'Bradesco', 'Santander', 'Caixa', 'Banco do Brasil', 'Inter', 'C6 Bank', 'XP', 'Next', 'Outro'];
 const COLORS = ['#7c3aed','#06b6d4','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899','#6366f1','#84cc16','#f97316', '#eab308', '#facc15'];
-const CATEGORIES = ['alimentacao','transporte','saude','lazer','educacao','casa','roupas','juros','outros'];
-const CATEGORY_LABELS = { alimentacao:'Alimentação', transporte:'Transporte', saude:'Saúde', lazer:'Lazer', educacao:'Educação', casa:'Casa', roupas:'Roupas', juros:'Juros/Taxas', outros:'Outros' };
+const CATEGORIES = ['alimentacao','transporte','saude','lazer','educacao','casa','roupas','juros','assinaturas','outros'];
+const CATEGORY_LABELS = { alimentacao:'Alimentação', transporte:'Transporte', saude:'Saúde', lazer:'Lazer', educacao:'Educação', casa:'Casa', roupas:'Roupas', juros:'Juros/Taxas', assinaturas:'Assinaturas', outros:'Outros' };
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
 function formatCurrency(v) {
@@ -174,7 +174,16 @@ function ExpenseFormModal({ isOpen, onClose, onSave, cards }) {
         <div className="form-group">
           <label className="form-label">Cartão</label>
           <select className="form-input" required value={form.card_id} onChange={e => set('card_id', e.target.value)}>
-            {cards.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            {cards.filter(c => c.type === 'credit').length > 0 && (
+              <optgroup label="💳 Cartões de Crédito">
+                {cards.filter(c => c.type === 'credit').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </optgroup>
+            )}
+            {cards.filter(c => c.type !== 'credit').length > 0 && (
+              <optgroup label="🏦 Contas Bancárias / Débito">
+                {cards.filter(c => c.type !== 'credit').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </optgroup>
+            )}
           </select>
         </div>
         <div className="form-group">
@@ -565,32 +574,68 @@ export default function Cards() {
         cards.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon">💳</div>
-            <div className="empty-state-title">Nenhum cartão cadastrado</div>
-            <div className="empty-state-text">Clique em "Novo Cartão" para começar</div>
+            <div className="empty-state-title">Nenhuma conta ou cartão cadastrado</div>
+            <div className="empty-state-text">Clique em "Nova Conta / Cartão" para começar</div>
           </div>
         ) : (
-          <div className="grid-3">
-            {cards.map((card, i) => (
-              <motion.div key={card.id}
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-                onClick={() => handleCardClick(card)}
-                style={{ cursor: 'pointer' }}
-              >
-                <CardVisual card={card} />
-                <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                      Gasto este mês
-                    </div>
-                    <div style={{ fontWeight: 700, fontSize: 16 }}>{formatCurrency(card.current_month_spent)}</div>
-                  </div>
-                  <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setEditCard(card); setShowCardModal(true); }}>
-                    Editar
-                  </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+            {cards.filter(c => c.type === 'credit').length > 0 && (
+              <div>
+                <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Cartões de Crédito</h2>
+                <div className="grid-3">
+                  {cards.filter(c => c.type === 'credit').map((card, i) => (
+                    <motion.div key={card.id}
+                      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      onClick={() => handleCardClick(card)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <CardVisual card={card} />
+                      <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                            Gasto este mês
+                          </div>
+                          <div style={{ fontWeight: 700, fontSize: 16 }}>{formatCurrency(card.current_month_spent)}</div>
+                        </div>
+                        <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setEditCard(card); setShowCardModal(true); }}>
+                          Editar
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            )}
+            
+            {cards.filter(c => c.type !== 'credit').length > 0 && (
+              <div>
+                <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Contas Bancárias / Débito</h2>
+                <div className="grid-3">
+                  {cards.filter(c => c.type !== 'credit').map((card, i) => (
+                    <motion.div key={card.id}
+                      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      onClick={() => handleCardClick(card)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <CardVisual card={card} />
+                      <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                            Gasto este mês
+                          </div>
+                          <div style={{ fontWeight: 700, fontSize: 16 }}>{formatCurrency(card.current_month_spent)}</div>
+                        </div>
+                        <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setEditCard(card); setShowCardModal(true); }}>
+                          Editar
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )
       ) : (

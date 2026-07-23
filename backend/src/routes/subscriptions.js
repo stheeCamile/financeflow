@@ -8,14 +8,41 @@ router.use(authMiddleware);
 // 1. Listar assinaturas do usuário
 router.get('/', async (req, res) => {
   try {
-    const { rows } = await query(`
+    const { rows: subs } = await query(`
       SELECT s.*, c.name as card_name, c.type as card_type 
       FROM subscriptions s
       JOIN cards c ON s.card_id = c.id
       WHERE s.user_id = $1
       ORDER BY s.is_active DESC, s.billing_day ASC
     `, [req.userId]);
-    res.json(rows);
+
+    const { rows: expenses } = await query(`
+      SELECT e.id, e.description, e.amount, e.purchase_date, c.name as card_name, c.type as card_type
+      FROM expenses e
+      JOIN cards c ON e.card_id = c.id
+      WHERE c.user_id = $1 
+        AND e.category = 'assinaturas'
+        AND e.source != 'system'
+        AND EXTRACT(MONTH FROM e.purchase_date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM e.purchase_date) = EXTRACT(YEAR FROM CURRENT_DATE)
+    `, [req.userId]);
+
+    const merged = [
+      ...subs.map(s => ({ ...s, item_type: 'subscription' })),
+      ...expenses.map(e => ({
+        id: `exp_${e.id}`,
+        description: e.description,
+        amount: e.amount,
+        category: 'assinaturas',
+        billing_day: new Date(e.purchase_date).getDate(),
+        is_active: true,
+        card_name: e.card_name,
+        card_type: e.card_type,
+        item_type: 'expense'
+      }))
+    ];
+
+    res.json(merged);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar assinaturas' });

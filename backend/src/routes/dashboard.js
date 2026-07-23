@@ -99,7 +99,19 @@ router.get('/summary', async (req, res) => {
     );
     const totalNetWorth = parseFloat(netWorthRes.rows[0].total) - parseFloat(futureRevRes.rows[0].total) + parseFloat(futureExpRes.rows[0].total);
 
+    const limitSpentRes = await query(
+      `SELECT COALESCE(SUM(e.amount), 0) AS total
+       FROM expenses e
+       JOIN invoices i ON e.invoice_id = i.id
+       JOIN cards c ON i.card_id = c.id
+       WHERE i.month = $1 AND i.year = $2 AND c.user_id = $3
+         AND e.installment_total = 1
+         AND e.category NOT IN ('casa', 'assinaturas', 'juros', 'taxas_e_tarifas', 'aluguel')`,
+      [month, year, uid]
+    );
+
     const totalSpent   = parseFloat(totalSpentRes.rows[0].total);
+    const limitSpent   = parseFloat(limitSpentRes.rows[0].total);
     const totalRevenue = parseFloat(totalRevenueRes.rows[0].total);
 
     res.json({
@@ -108,7 +120,7 @@ router.get('/summary', async (req, res) => {
       balance: totalRevenue - totalSpent,
       total_net_worth: totalNetWorth,
       monthly_limit: monthlyLimit,
-      limit_percent: monthlyLimit > 0 ? Math.min((totalSpent / monthlyLimit) * 100, 100).toFixed(1) : 0,
+      limit_percent: monthlyLimit > 0 ? Math.min((limitSpent / monthlyLimit) * 100, 100).toFixed(1) : 0,
       categories: categoryRes.rows,
       cards: cardSpentRes.rows,
       upcoming_invoices: upcomingRes.rows,
